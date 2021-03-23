@@ -16,7 +16,12 @@ public class CityService {
         this.cityRepository = cityRepository;
     }
 
-    public List<City> getAll(){
-        return cityRepository.getAllByActive((byte)1);
+    public List<City> getAll() {
+        return cityRepository.getAllByActive((byte) 1);
+    }
+
+    public City findByNameAndCountry(String name, String countryName) {
+        return cityRepository.findByNameAndCountryNameAndActive(name, countryName, (byte) 1);
+
     }
 }

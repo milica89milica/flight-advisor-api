@@ -1,36 +1,29 @@
 package com.htec.fa_api.model;
 
+
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-public class City {
-    private Integer id;
-    private String name;
+public class Airline {
+    private Integer id; //from file
+    private String iataCode;
+    private String icaoCode;
     private Country country;
     private String description;
-    private String postalCode;
     private Byte active;
 
-    public City() {
+    public Airline() {
     }
 
-    public City(String name) {
-        this.name = name;
-    }
-
-    public City(String name, Country country) {
-        this.name = name;
-        this.country = country;
-    }
-
-    public City(String name, Country country, String description, String postalCode) {
-        this.name = name;
+    public Airline(Integer id, String iataCode, String icaoCode, Country country, String description) {
+        this.id = id;
+        this.iataCode = iataCode;
+        this.icaoCode = icaoCode;
         this.country = country;
         this.description = description;
-        this.postalCode = postalCode;
     }
 
     @Id
@@ -45,15 +38,24 @@ public class City {
     }
 
     @Basic
-    @Column(name = "name", nullable = false)
-    public String getName() {
-        return name;
+    @Column(name = "iata_code", nullable = false)
+    public String getIataCode() {
+        return iataCode;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setIataCode(String iataCode) {
+        this.iataCode = iataCode;
     }
 
+    @Basic
+    @Column(name = "icao_code", nullable = false)
+    public String getIcaoCode() {
+        return icaoCode;
+    }
+
+    public void setIcaoCode(String icaoCode) {
+        this.icaoCode = icaoCode;
+    }
 
     @ManyToOne
     @JoinColumn(name = "country", nullable = false)
@@ -66,23 +68,13 @@ public class City {
     }
 
     @Basic
-    @Column(name = "description", nullable = true)
+    @Column(name = "description", nullable = false)
     public String getDescription() {
         return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    @Basic
-    @Column(name = "postal_code", nullable = true)
-    public String getPostalCode() {
-        return postalCode;
-    }
-
-    public void setPostalCode(String postalCode) {
-        this.postalCode = postalCode;
     }
 
     @Basic
@@ -100,28 +92,28 @@ public class City {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        City city = (City) o;
-        return Objects.equals(id, city.id) &&
-                Objects.equals(name, city.name) &&
-                Objects.equals(country, city.country) &&
-                Objects.equals(description, city.description) &&
-                Objects.equals(postalCode, city.postalCode) &&
-                Objects.equals(active, city.active);
+        Airline airline = (Airline) o;
+        return Objects.equals(id, airline.id) &&
+                Objects.equals(iataCode, airline.iataCode) &&
+                Objects.equals(icaoCode, airline.icaoCode) &&
+                Objects.equals(country, airline.country) &&
+                Objects.equals(description, airline.description) &&
+                Objects.equals(active, airline.active);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, country, description, postalCode, active);
+        return Objects.hash(id, iataCode, icaoCode, country, description, active);
     }
 
     @Override
     public String toString() {
-        return "City{" +
+        return "Airline{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
+                ", iataCode='" + iataCode + '\'' +
+                ", icaoCode='" + icaoCode + '\'' +
                 ", country=" + country +
                 ", description='" + description + '\'' +
-                ", postalCode='" + postalCode + '\'' +
                 ", active=" + active +
                 '}';
     }

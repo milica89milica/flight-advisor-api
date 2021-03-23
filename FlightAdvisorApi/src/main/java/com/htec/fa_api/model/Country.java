@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-public class Country {
+public class Country implements Comparable<Country> {
     private Integer id;
     private String name;
     private String alphaCode;
@@ -86,5 +86,10 @@ public class Country {
                 ", alphaCode='" + alphaCode + '\'' +
                 ", active=" + active +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Country c) {
+        return this.name.compareTo(c.name);
     }
 }

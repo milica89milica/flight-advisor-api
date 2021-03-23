@@ -19,4 +19,8 @@ public class CountryService {
     public List<Country> getAll() {
         return countryRepository.getAllByActive((byte) 1);
     }
+
+    public Country findByName(String name){
+        return countryRepository.findByNameAndActive(name, (byte) 1);
+    }
 }
