@@ -2,6 +2,7 @@ package com.htec.fa_api.logger;
 
 import com.htec.fa_api.security.AuthenticationFacade;
 import com.htec.fa_api.service.UserService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,9 @@ import java.util.List;
 
 @Service
 public class LoggerService<T> {
+
+    @Value("${application.logger.enabled}")
+    private static boolean loggerEnabled;
 
     private final LoggerRepository loggerRepository;
     private final UserService userService;
@@ -24,15 +28,17 @@ public class LoggerService<T> {
     }
 
     public Logger logAction(T object, String actionType, String message) {
-        Logger logger = new Logger();
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        logger.setUser(userService.getByUsername(username));
-        logger.setTableName(object.getClass().getSimpleName());
+        if(loggerEnabled){
+            Logger logger = new Logger();
+            String username = SecurityContextHolder.getContext().getAuthentication().getName();
+            logger.setUser(userService.getByUsername(username));
+            logger.setTableName(object.getClass().getSimpleName());
 
-        logger.setActionType(actionType);
-        logger.setActionDetails(messageSource.getMessage(message, null, null).concat(object.toString()));
-
-        return loggerRepository.save(logger);
+            logger.setActionType(actionType);
+            logger.setActionDetails(messageSource.getMessage(message, null, null).concat(object.toString()));
+            return loggerRepository.save(logger);
+        }
+        return null;
     }
 
     public void logSpecificAction(String actionType, String actionDetails, String tableName) {

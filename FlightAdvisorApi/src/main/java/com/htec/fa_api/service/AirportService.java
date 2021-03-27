@@ -47,7 +47,7 @@ public class AirportService {
                 airport.setLatitude(airportExtended.getLatitude());
                 airport.setLongitude(airportExtended.getLongitude());
                 airport.setAltitude(airportExtended.getAltitude());
-                airport.setType(AirportType.AIRPORT);
+                airport.setType(AirportType.AIRPORT.toString());
                 airport.setDst(DaylightSavingsTime.valueOf(airportExtended.getDst()).toString());
                 log.info("Airport has been successfully created: " + airport); //todo messages
                 airports.add(airport);

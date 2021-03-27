@@ -12,4 +12,6 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
 
     List<Comment> getAllByActive(Byte active);
 
+    List<Comment> getAllByCityIdAndActive(Integer cityId, byte active);
+
 }

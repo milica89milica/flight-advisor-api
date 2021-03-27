@@ -3,6 +3,7 @@ package com.htec.fa_api.service;
 
 import com.htec.fa_api.exception.HttpException;
 import com.htec.fa_api.model.User;
+import com.htec.fa_api.model.UserGroup;
 import com.htec.fa_api.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -20,20 +21,22 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final MessageSource messageSource;
+    private final UserGroupService userGroupService;
 
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, MessageSource messageSource) {
+    public UserService(UserRepository userRepository, MessageSource messageSource, UserGroupService userGroupService) {
         this.userRepository = userRepository;
         this.messageSource = messageSource;
+        this.userGroupService = userGroupService;
     }
 
     public List<User> getAll() {
         return userRepository.getAllByActive((byte) 1);
     }
 
-    public List<User> getAllByUserGroup(Integer userGroupId) { //todo provjeriti unique usera
+    public List<User> getAllByUserGroup(Integer userGroupId) {
         return userRepository.getAllByUserGroupIdAndActive(userGroupId, (byte) 1);
     }
 
@@ -46,6 +49,10 @@ public class UserService {
         User user = userRepository.getByUsernameAndActive(object.getUsername(),(byte)1);
         if(user!=null){
             throw new HttpException(messageSource.getMessage("notUnique.username",null,null), HttpStatus.BAD_REQUEST);
+        }
+        Optional<UserGroup> userGroup = userGroupService.findById(object.getUserGroup().getId());
+        if(!userGroup.isPresent()){
+            throw new HttpException(messageSource.getMessage("notExists.userGroup",null,null), HttpStatus.BAD_REQUEST);
         }
         object.setPassword(passwordEncoder.encode(object.getPassword())); //todo
         return userRepository.save(object);
@@ -61,10 +68,13 @@ public class UserService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void delete(Integer id) throws HttpException {
+    public User delete(Integer id) throws HttpException {
         Optional<User> user = userRepository.findById(id);
+        if (!user.isPresent()) {
+            throw new HttpException(messageSource.getMessage("notExists.user", null, null), HttpStatus.NOT_FOUND);
+        }
         user.get().setActive((byte)0);
-        userRepository.save(user.get());
+        return userRepository.save(user.get());
     }
 
     public Optional<User> findById(Integer id){

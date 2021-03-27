@@ -1,7 +1,9 @@
 package com.htec.fa_api.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -18,6 +20,7 @@ public class City {
     private String postalCode; //dont have pattern
     private Byte active;
 
+    //@BatchSize(size=16)
     private List<Comment> commentList;
 
     public City() {
@@ -107,6 +110,8 @@ public class City {
 
     @JsonManagedReference
     @OneToMany(mappedBy = "city", fetch = FetchType.LAZY)
+    @OrderBy("updated DESC")
+    @Where(clause = "active = true") //show only active!
     public List<Comment> getCommentList() {
         return commentList;
     }

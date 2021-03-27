@@ -34,31 +34,27 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<List<User>> getAll() {
-        return new ResponseEntity<List<User>>(userService.getAll(), HttpStatus.OK);
+        return new ResponseEntity<>(userService.getAll(), HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<User> insert(@RequestBody User object) throws HttpException {
         User user = userService.insert(object);
         loggerService.logAction(user, "CREATE", "logger.create");
-        return new ResponseEntity<User>(user, HttpStatus.CREATED);
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{id}")
     public ResponseEntity<User> update(@PathVariable("id") Integer id, @Valid @RequestBody User object) throws HttpException {
         User user = userService.update(object);
         loggerService.logAction(user, "UPDATE", "logger.update");
-        return new ResponseEntity<User>(user, HttpStatus.OK);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<String> delete(@PathVariable Integer id) throws HttpException {
-        Optional<User> user = userService.findById(id);
-        if (!user.isPresent()) {
-            throw new HttpException(messageSource.getMessage("notExists.user", null, null), HttpStatus.NOT_FOUND);
-        }
-        userService.delete(id);
+    public ResponseEntity<User> delete(@PathVariable Integer id) throws HttpException {
+        User user = userService.delete(id);
         loggerService.logAction(user, "DELETE", "logger.delete");
-        return new ResponseEntity<>("", HttpStatus.OK);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 }

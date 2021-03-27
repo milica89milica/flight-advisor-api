@@ -43,9 +43,18 @@ public class UserGroupService {
         return userGroupRepository.save(object); //check created, updated
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    public UserGroup delete(Integer id) throws HttpException {
+        Optional<UserGroup> userGroup = userGroupRepository.findById(id);
+        if(!userGroup.isPresent()){
+            throw new HttpException(messageSource.getMessage("notExists.userGroup", null, null), HttpStatus.NOT_FOUND);
+        }
+        userGroup.get().setActive((byte)0);
+        return userGroupRepository.save(userGroup.get());
+    }
 
-    public UserGroup findById(Integer id) { //todo brisati
-        return userGroupRepository.getOne(id);
+    public Optional<UserGroup> findById(Integer id) {
+        return userGroupRepository.findById(id);
     }
 
 

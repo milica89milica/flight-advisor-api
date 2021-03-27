@@ -3,6 +3,7 @@ package com.htec.fa_api.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -14,6 +15,7 @@ public class Comment {
     private String title;
     private String details;
     private Timestamp created;
+    private Timestamp updated;
     private City city;
     private User user;
     private Byte active;
@@ -21,10 +23,11 @@ public class Comment {
     public Comment() {
     }
 
-    public Comment(String title, String details, Timestamp created, City city, User user) {
+    public Comment(String title, String details, Timestamp created, Timestamp updated, City city, User user) {
         this.title = title;
         this.details = details;
         this.created = created;
+        this.updated = updated;
         this.city = city;
         this.user = user;
     }
@@ -70,6 +73,14 @@ public class Comment {
         this.created = created;
     }
 
+    @UpdateTimestamp
+    public Timestamp getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(Timestamp updated) {
+        this.updated = updated;
+    }
 
     @JsonBackReference
     @ManyToOne

@@ -59,10 +59,13 @@ public class CityService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void delete(Integer id) {
+    public City delete(Integer id) throws HttpException {
         Optional<City> city = cityRepository.findById(id);
+        if (!city.isPresent()) {
+            throw new HttpException(messageSource.getMessage("notExists.city", null, null), HttpStatus.NOT_FOUND);
+        }
         city.get().setActive((byte) 0);
-        cityRepository.save(city.get());
+        return cityRepository.save(city.get());
     }
 
 }
