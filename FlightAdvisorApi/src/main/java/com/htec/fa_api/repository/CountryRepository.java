@@ -13,4 +13,6 @@ public interface CountryRepository extends JpaRepository<Country, Integer> {
     List<Country> getAllByActive(Byte active);
     Country findByNameAndActive(String name, Byte active);
 
+    Country getById(Integer id);
+
 }

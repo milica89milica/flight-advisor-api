@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface UserGroupRepository extends JpaRepository<UserGroup, Integer> {
     List<UserGroup> getAllByActive(Byte active);
+    boolean existsByNameAndActive(String name, Byte active);
 }

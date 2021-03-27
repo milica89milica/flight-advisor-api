@@ -1,14 +1,17 @@
 package com.htec.fa_api.model;
 
 import org.hibernate.annotations.ColumnDefault;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @Entity
 public class UserGroup {
     private Integer id;
-    private String name;
+    private String name; //todo add unique
     private String description;
     private Byte active;
 
@@ -33,6 +36,7 @@ public class UserGroup {
 
     @Basic
     @Column(name = "name", nullable = false)
+    @NotNull(message = "{NotNull.name}")
     public String getName() {
         return name;
     }

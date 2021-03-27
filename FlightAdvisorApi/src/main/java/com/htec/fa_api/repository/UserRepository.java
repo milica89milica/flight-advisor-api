@@ -11,4 +11,5 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Integer> {
     List<User> getAllByActive(Byte active);
     List<User> getAllByUserGroupIdAndActive(Integer userGroupId, Byte active);
+    User getByUsernameAndActive(String username, Byte active);
 }

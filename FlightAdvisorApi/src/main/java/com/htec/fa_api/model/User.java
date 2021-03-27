@@ -1,14 +1,18 @@
 package com.htec.fa_api.model;
 
+import org.checkerframework.common.aliasing.qual.Unique;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
+@Validated
 public class User {
     private Integer id;
     private String firstName;
@@ -18,19 +22,21 @@ public class User {
     private String email;
     private Timestamp created;
     private Timestamp updated;
-    private UserGroup userGroup;
+    private UserGroup userGroup; //assume user can be admin or regular
+    private Byte enabled;
     private Byte active;
 
     public User() {
     }
 
-    public User(String firstName, String lastName, String username, String password, String email, UserGroup userGroup) {
+    public User(String firstName, String lastName, String username, String password, String email, UserGroup userGroup, Byte enabled) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.password = password;
         this.email = email;
         this.userGroup = userGroup;
+        this.enabled = enabled;
     }
 
     @Id
@@ -66,6 +72,7 @@ public class User {
 
     @Basic
     @Column(name = "username", nullable = false)
+    @Unique //todo message?
     public String getUsername() {
         return username;
     }
@@ -86,6 +93,7 @@ public class User {
 
     @Basic
     @Column(name = "email", nullable = false)
+    @NotNull(message = "{NotNull.email}")
     public String getEmail() {
         return email;
     }
@@ -123,6 +131,17 @@ public class User {
     }
 
     @Basic
+    @Column(name = "enabled", nullable = false, insertable = false)
+    @ColumnDefault(value = "1")
+    public Byte getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Byte enabled) {
+        this.enabled = enabled;
+    }
+
+    @Basic
     @Column(name = "active", nullable = false, insertable = false)
     @ColumnDefault(value = "1")
     public Byte getActive() {
@@ -147,12 +166,13 @@ public class User {
                 Objects.equals(created, user.created) &&
                 Objects.equals(updated, user.updated) &&
                 Objects.equals(userGroup, user.userGroup) &&
+                Objects.equals(enabled, user.enabled) &&
                 Objects.equals(active, user.active);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, username, password, email, created, updated, userGroup, active);
+        return Objects.hash(id, firstName, lastName, username, password, email, created, updated, userGroup, enabled, active);
     }
 
     @Override
@@ -162,11 +182,10 @@ public class User {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 ", created=" + created +
                 ", updated=" + updated +
-                ", userGroup=" + userGroup +
+                ", enabled=" + enabled +
                 ", active=" + active +
                 '}';
     }

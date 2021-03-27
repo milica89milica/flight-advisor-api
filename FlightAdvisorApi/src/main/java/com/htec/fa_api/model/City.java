@@ -1,18 +1,24 @@
 package com.htec.fa_api.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"name", "country"})}) //todo add message
 public class City {
     private Integer id;
     private String name;
     private Country country;
     private String description;
-    private String postalCode;
+    private String postalCode; //dont have pattern
     private Byte active;
+
+    private List<Comment> commentList;
 
     public City() {
     }
@@ -46,6 +52,7 @@ public class City {
 
     @Basic
     @Column(name = "name", nullable = false)
+    @NotNull(message = "{NotNull.name}")
     public String getName() {
         return name;
     }
@@ -57,6 +64,7 @@ public class City {
 
     @ManyToOne
     @JoinColumn(name = "country", nullable = false)
+    @NotNull(message = "{NotNull.country}")
     public Country getCountry() {
         return country;
     }
@@ -67,6 +75,7 @@ public class City {
 
     @Basic
     @Column(name = "description", nullable = true)
+    @NotNull(message = "{NotNull.description}") //from specification
     public String getDescription() {
         return description;
     }
@@ -94,6 +103,16 @@ public class City {
 
     public void setActive(Byte active) {
         this.active = active;
+    }
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "city", fetch = FetchType.LAZY)
+    public List<Comment> getCommentList() {
+        return commentList;
+    }
+
+    public void setCommentList(List<Comment> commentList) {
+        this.commentList = commentList;
     }
 
     @Override

@@ -5,9 +5,11 @@ import com.htec.fa_api.util.DaylightSavingsTime;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @Entity
+@Table(uniqueConstraints={@UniqueConstraint(columnNames={"iata_code","icao_code"})}) //todo add message
 public class Airport {
     private Integer id;
     private String name;
@@ -17,15 +19,16 @@ public class Airport {
     private Double latitude;
     private Double longitude;
     private Double altitude;
-    private AirportType type;
-    private DaylightSavingsTime dst;
+    private String type;
+    private String dst;
+    private String dbTimezone;
     private Byte active;
     //todo: add other
 
     public Airport() {
     }
 
-    public Airport(String name, City city, String iataCode, String icaoCode, Double latitude, Double longitude, Double altitude, AirportType type, DaylightSavingsTime dst) {
+    public Airport(String name, City city, String iataCode, String icaoCode, Double latitude, Double longitude, Double altitude, String type, String dst, String dbTimezone) {
         this.name = name;
         this.city = city;
         this.iataCode = iataCode;
@@ -35,6 +38,7 @@ public class Airport {
         this.altitude = altitude;
         this.type = type;
         this.dst = dst;
+        this.dbTimezone = dbTimezone;
     }
 
     @Id
@@ -50,6 +54,7 @@ public class Airport {
 
     @Basic
     @Column(name = "name", nullable = false)
+
     public String getName() {
         return name;
     }
@@ -131,22 +136,32 @@ public class Airport {
 
     @Basic
     @Column(name = "type", nullable = true)
-    public AirportType getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(AirportType type) {
+    public void setType(String type) {
         this.type = type;
     }
 
     @Basic
     @Column(name = "dst", nullable = false)
-    public DaylightSavingsTime getDst() {
+    public String getDst() {
         return dst;
     }
 
-    public void setDst(DaylightSavingsTime dst) {
+    public void setDst(String dst) {
         this.dst = dst;
+    }
+
+    @Basic
+    @Column(name = "dbTimezone", nullable = false)
+    public String getDbTimezone() {
+        return dbTimezone;
+    }
+
+    public void setDbTimezone(String dbTimezone) {
+        this.dbTimezone = dbTimezone;
     }
 
     @Override

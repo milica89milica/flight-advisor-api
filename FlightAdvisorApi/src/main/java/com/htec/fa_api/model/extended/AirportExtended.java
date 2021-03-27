@@ -19,8 +19,9 @@ public class AirportExtended implements Serializable {
     private Double altitude;
     private Integer utcTimeOffset;
     private String dst;
-    private String type;
     private String timeZone;
+    private String type;
+
     //not using source, it's not relevant
 
 
@@ -142,14 +143,6 @@ public class AirportExtended implements Serializable {
         this.dst = dst;
     }
 
-    @JsonProperty("type")
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 
     @JsonProperty("timeZone")
     public String getTimeZone() {
@@ -158,6 +151,15 @@ public class AirportExtended implements Serializable {
 
     public void setTimeZone(String timeZone) {
         this.timeZone = timeZone;
+    }
+
+    @JsonProperty("type")
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     @Override

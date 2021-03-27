@@ -13,8 +13,8 @@ public class Route {
     private Airport destinationAirport;
     private Byte codeshare; //"yes" or "no"
     private Integer stops;
-    private AircraftType equipment;
-    private Double price;
+    private AircraftType equipment; //todo
+    private Double price; //instead of BigDecimal
     private Byte active;
 
     public Route() {

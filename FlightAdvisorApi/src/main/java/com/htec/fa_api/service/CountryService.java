@@ -20,7 +20,11 @@ public class CountryService {
         return countryRepository.getAllByActive((byte) 1);
     }
 
-    public Country findByName(String name){
-        return countryRepository.findByNameAndActive(name, (byte) 1);
+    public boolean existsById(Integer id) {
+        return countryRepository.existsById(id);
+    }
+
+    public Country getById(Integer id) {
+        return countryRepository.getById(id);
     }
 }
