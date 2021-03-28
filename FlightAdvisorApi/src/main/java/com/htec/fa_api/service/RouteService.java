@@ -43,13 +43,13 @@ public class RouteService {
 
             Airport sourceAirport = airportService.findById(routeExtended.getSourceAirportId());
             if (sourceAirport == null) {
-                throw new HttpException("{notExists.sourceAirport}", HttpStatus.NOT_FOUND);
+                throw new HttpException(messageSource.getMessage("{notExists.sourceAirport}", null, null), HttpStatus.NOT_FOUND);
             }
             route.setSourceAirport(sourceAirport);
 
             Airport destinationAirport = airportService.findById(routeExtended.getDestinationAirportId());
             if (destinationAirport == null) {
-                throw new HttpException("{notExists.destinationAirport}", HttpStatus.NOT_FOUND);
+                throw new HttpException(messageSource.getMessage("{notExists.destinationAirport}", null, null), HttpStatus.NOT_FOUND);
             }
             route.setDestinationAirport(destinationAirport);
 
@@ -66,7 +66,7 @@ public class RouteService {
             }
 
             AircraftType equipment = new AircraftType();
-            equipment.setIcaoCode(routeExtended.getEquipment());
+            equipment.setIcaoCode(routeExtended.getEquipmentCode());
             route.setEquipment(equipment);
 
             route.setStops(routeExtended.getStops());

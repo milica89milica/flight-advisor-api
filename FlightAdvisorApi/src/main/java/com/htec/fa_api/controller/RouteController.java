@@ -32,6 +32,6 @@ public class RouteController {
     @PostMapping(value = "/upload", consumes = "multipart/form-data")
     public ResponseEntity<List<Route>> uploadMultipart(@RequestParam("routes") MultipartFile file) throws IOException, HttpException {
         List<RouteExtended> routesExtended = CsvReader.read(RouteExtended.class, file.getInputStream());
-        return new ResponseEntity<List<Route>>(routeService.saveAll(routesExtended), HttpStatus.CREATED);
+        return new ResponseEntity<>(routeService.saveAll(routesExtended), HttpStatus.CREATED);
     }
 }

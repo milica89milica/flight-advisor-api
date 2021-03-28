@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,31 +33,44 @@ public class AirportService {
         this.cityService = cityService;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public List<Airport> saveAll(List<AirportExtended> airportsExtended) throws HttpException {
         List<Airport> airports = new ArrayList<>();
         for (AirportExtended airportExtended : airportsExtended) {
-            Airport airport = new Airport();
-            airport.setId(airportExtended.getId()); //already suplied
-            airport.setName(airportExtended.getName());
-            airport.setIataCode(airportExtended.getIataCode());
-            airport.setIcaoCode(airportExtended.getIcaoCode());
-            airport.setDbTimezone(airportExtended.getTimeZone());
-            City city = cityService.findByNameAndCountry(airportExtended.getCityName(), airportExtended.getCountryName());
-            if (city != null) {
-                airport.setCity(city);
-                airport.setLatitude(airportExtended.getLatitude());
-                airport.setLongitude(airportExtended.getLongitude());
-                airport.setAltitude(airportExtended.getAltitude());
-                airport.setType(AirportType.AIRPORT.toString());
-                airport.setDst(DaylightSavingsTime.valueOf(airportExtended.getDst()).toString());
-                log.info("Airport has been successfully created: " + airport); //todo messages
-                airports.add(airport);
+            Airport airport = airportRepository.getByIataCodeAndIcaoCodeAndActive(airportExtended.getIataCode(), airportExtended.getIcaoCode(), (byte) 1);
+            if (airport == null) { //airport is not already uploaded
+                City city = cityService.findByNameAndCountry(airportExtended.getCityName(), airportExtended.getCountryName());
+                if (city != null) {
+                    airport = new Airport();
+                    airport.setId(airportExtended.getId()); //already suplied
+                    airport.setName(airportExtended.getName());
+                    airport.setIataCode(airportExtended.getIataCode());
+                    airport.setIcaoCode(airportExtended.getIcaoCode());
+                    airport.setDbTimezone(airportExtended.getTimeZone());
+                    airport.setCity(city);
+                    airport.setLatitude(airportExtended.getLatitude());
+                    airport.setLongitude(airportExtended.getLongitude());
+                    airport.setAltitude(airportExtended.getAltitude());
+                    airport.setType(AirportType.AIRPORT.toString());
+                    if (airportExtended.getDst() == null) {
+                        airportExtended.setDst("N"); //work around
+                    }
+                    airport.setDst(DaylightSavingsTime.valueOf(airportExtended.getDst()).toString());
+                    airport.setUtcTimeOffset(airportExtended.getUtcTimeOffset());
+                    log.info(messageSource.getMessage("created.airport", null, null) + " for " + airportExtended);
+                    airports.add(airport);
+
+                } else {
+                    log.error(messageSource.getMessage("notExists.city", null, null) + " for " + airportExtended);
+                }
             } else {
-                log.error(messageSource.getMessage("notExists.city", null, null) + " for " + airport);
+                log.info(messageSource.getMessage("alreadyExists.airport", null, null) + " for " + airportExtended);
             }
+
         }
         return airportRepository.saveAll(airports);
     }
+
 
     public List<Airport> getAll() {
         return airportRepository.getAllByActive((byte) 1);
@@ -65,4 +79,5 @@ public class AirportService {
     public Airport findById(Integer id) {
         return airportRepository.findByIdAndActive(id, (byte) 1);
     }
+
 }

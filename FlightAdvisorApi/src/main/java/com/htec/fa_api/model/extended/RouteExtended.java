@@ -44,7 +44,6 @@ public class RouteExtended implements Serializable {
     public void setAirlineCode(String airlineCode) {
         this.airlineCode = airlineCode;
     }
-
     @JsonProperty("airlineId")
     public Integer getAirlineId() {
         return airlineId;
@@ -53,7 +52,6 @@ public class RouteExtended implements Serializable {
     public void setAirlineId(Integer airlineId) {
         this.airlineId = airlineId;
     }
-
     @JsonProperty("sourceAirportCode")
     public String getSourceAirportCode() {
         return sourceAirportCode;
@@ -62,7 +60,6 @@ public class RouteExtended implements Serializable {
     public void setSourceAirportCode(String sourceAirportCode) {
         this.sourceAirportCode = sourceAirportCode;
     }
-
     @JsonProperty("sourceAirportId")
     public Integer getSourceAirportId() {
         return sourceAirportId;
@@ -71,7 +68,6 @@ public class RouteExtended implements Serializable {
     public void setSourceAirportId(Integer sourceAirportId) {
         this.sourceAirportId = sourceAirportId;
     }
-
     @JsonProperty("destinationAirportCode")
     public String getDestinationAirportCode() {
         return destinationAirportCode;
@@ -80,7 +76,6 @@ public class RouteExtended implements Serializable {
     public void setDestinationAirportCode(String destinationAirportCode) {
         this.destinationAirportCode = destinationAirportCode;
     }
-
     @JsonProperty("destinationAirportId")
     public Integer getDestinationAirportId() {
         return destinationAirportId;
@@ -89,7 +84,6 @@ public class RouteExtended implements Serializable {
     public void setDestinationAirportId(Integer destinationAirportId) {
         this.destinationAirportId = destinationAirportId;
     }
-
     @JsonProperty("codeshare")
     public String getCodeshare() {
         return codeshare;
@@ -98,7 +92,6 @@ public class RouteExtended implements Serializable {
     public void setCodeshare(String codeshare) {
         this.codeshare = codeshare;
     }
-
     @JsonProperty("stops")
     public Integer getStops() {
         return stops;
@@ -107,16 +100,14 @@ public class RouteExtended implements Serializable {
     public void setStops(Integer stops) {
         this.stops = stops;
     }
-
     @JsonProperty("equipmentCode")
-    public String getEquipment() {
+    public String getEquipmentCode() {
         return equipmentCode;
     }
 
-    public void setEquipment(String equipmentCode) {
+    public void setEquipmentCode(String equipmentCode) {
         this.equipmentCode = equipmentCode;
     }
-
     @JsonProperty("price")
     public Double getPrice() {
         return price;
@@ -125,7 +116,6 @@ public class RouteExtended implements Serializable {
     public void setPrice(Double price) {
         this.price = price;
     }
-
 
     @Override
     public boolean equals(Object o) {

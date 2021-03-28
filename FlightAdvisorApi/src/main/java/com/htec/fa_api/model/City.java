@@ -14,7 +14,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Entity
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"name", "country"})}) //todo add message
+//@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"name", "country"})}) //todo add message, problem: deleted items?
 public class City {
     private Integer id;
     private String name;

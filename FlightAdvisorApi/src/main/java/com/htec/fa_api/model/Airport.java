@@ -1,15 +1,12 @@
 package com.htec.fa_api.model;
 
-import com.htec.fa_api.util.AirportType;
-import com.htec.fa_api.util.DaylightSavingsTime;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @Entity
-@Table(uniqueConstraints={@UniqueConstraint(columnNames={"iata_code","icao_code"})}) //todo add message
+//@Table(uniqueConstraints={@UniqueConstraint(columnNames={"iata_code","icao_code"})}) //todo add message
 public class Airport {
     private Integer id;
     private String name;
@@ -19,16 +16,17 @@ public class Airport {
     private Double latitude;
     private Double longitude;
     private Double altitude;
+    private Double utcTimeOffset;
     private String type;
     private String dst;
     private String dbTimezone;
     private Byte active;
-    //todo: add other
+    //todo: source data not relevant?
 
     public Airport() {
     }
 
-    public Airport(String name, City city, String iataCode, String icaoCode, Double latitude, Double longitude, Double altitude, String type, String dst, String dbTimezone) {
+    public Airport(String name, City city, String iataCode, String icaoCode, Double latitude, Double longitude, Double altitude, String type, String dst, String dbTimezone, Double utcTimeOffset) {
         this.name = name;
         this.city = city;
         this.iataCode = iataCode;
@@ -39,6 +37,8 @@ public class Airport {
         this.type = type;
         this.dst = dst;
         this.dbTimezone = dbTimezone;
+        this.utcTimeOffset = utcTimeOffset;
+        //this.active = 1; //default column is not working?
     }
 
     @Id
@@ -156,12 +156,23 @@ public class Airport {
 
     @Basic
     @Column(name = "dbTimezone", nullable = false)
+    @ColumnDefault(value = "")
     public String getDbTimezone() {
         return dbTimezone;
     }
 
     public void setDbTimezone(String dbTimezone) {
         this.dbTimezone = dbTimezone;
+    }
+
+    @Basic
+    @Column(name = "utcTimeOffset", nullable = false)
+    public Double getUtcTimeOffset() {
+        return utcTimeOffset;
+    }
+
+    public void setUtcTimeOffset(Double utcTimeOffset) {
+        this.utcTimeOffset = utcTimeOffset;
     }
 
     @Override

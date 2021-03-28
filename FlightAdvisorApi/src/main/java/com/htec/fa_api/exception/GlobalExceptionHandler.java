@@ -11,7 +11,7 @@ import javax.validation.ConstraintViolationException;
 import java.util.Set;
 
 @ControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler { //todo
 
     @ExceptionHandler(value = {ConstraintViolationException.class})
     public ResponseEntity<ErrorMessage> fieldValidationFailed(ConstraintViolationException ex, WebRequest request) {

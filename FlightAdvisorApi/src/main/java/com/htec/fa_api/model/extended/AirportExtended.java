@@ -17,18 +17,16 @@ public class AirportExtended implements Serializable {
     private Double latitude;
     private Double longitude;
     private Double altitude;
-    private Integer utcTimeOffset;
+    private Double utcTimeOffset;
     private String dst;
     private String timeZone;
     private String type;
-
-    //not using source, it's not relevant
-
+    private String dataSource;
 
     public AirportExtended() {
     }
 
-    public AirportExtended(Integer id, String name, String cityName, String countryName, String iataCode, String icaoCode, Double latitude, Double longitude, Double altitude, String dst, String type, Integer utcTimeOffset, String timeZone) {
+    public AirportExtended(Integer id, String name, String cityName, String countryName, String iataCode, String icaoCode, Double latitude, Double longitude, Double altitude, String dst, String type, Double utcTimeOffset, String timeZone, String dataSource) {
         this.id = id;
         this.name = name;
         this.cityName = cityName;
@@ -42,6 +40,7 @@ public class AirportExtended implements Serializable {
         this.type = type;
         this.utcTimeOffset = utcTimeOffset;
         this.timeZone = timeZone;
+        this.dataSource = dataSource;
     }
 
     @JsonProperty("id")
@@ -126,11 +125,11 @@ public class AirportExtended implements Serializable {
     }
 
     @JsonProperty("utcTimeOffset")
-    public Integer getUtcTimeOffset() {
+    public Double getUtcTimeOffset() {
         return utcTimeOffset;
     }
 
-    public void setUtcTimeOffset(Integer utcTimeOffset) {
+    public void setUtcTimeOffset(Double utcTimeOffset) {
         this.utcTimeOffset = utcTimeOffset;
     }
 
@@ -162,6 +161,15 @@ public class AirportExtended implements Serializable {
         this.type = type;
     }
 
+    @JsonProperty("dataSource")
+    public String getDataSource() {
+        return dataSource;
+    }
+
+    public void setDataSource(String dataSource) {
+        this.dataSource = dataSource;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -178,13 +186,14 @@ public class AirportExtended implements Serializable {
                 Objects.equals(altitude, that.altitude) &&
                 Objects.equals(utcTimeOffset, that.utcTimeOffset) &&
                 Objects.equals(dst, that.dst) &&
+                Objects.equals(timeZone, that.timeZone) &&
                 Objects.equals(type, that.type) &&
-                Objects.equals(timeZone, that.timeZone);
+                Objects.equals(dataSource, that.dataSource);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, cityName, countryName, iataCode, icaoCode, latitude, longitude, altitude, utcTimeOffset, dst, type, timeZone);
+        return Objects.hash(id, name, cityName, countryName, iataCode, icaoCode, latitude, longitude, altitude, utcTimeOffset, dst, timeZone, type, dataSource);
     }
 
     @Override
@@ -201,8 +210,9 @@ public class AirportExtended implements Serializable {
                 ", altitude=" + altitude +
                 ", utcTimeOffset=" + utcTimeOffset +
                 ", dst='" + dst + '\'' +
-                ", type='" + type + '\'' +
                 ", timeZone='" + timeZone + '\'' +
+                ", type='" + type + '\'' +
+                ", dataSource='" + dataSource + '\'' +
                 '}';
     }
 }

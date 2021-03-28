@@ -7,14 +7,15 @@ import com.htec.fa_api.util.CountryGenerator;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.ConfigurableApplicationContext;
 
 @ServletComponentScan
 @EnableConfigurationProperties
-//@SpringBootApplication(exclude = SecurityAutoConfiguration.class)
-@SpringBootApplication
+@SpringBootApplication(exclude = SecurityAutoConfiguration.class)
+//@SpringBootApplication
 public class FlightAdvisorApiApplication {
 
     public static void main(String[] args) {
