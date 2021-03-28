@@ -1,14 +1,15 @@
 package com.htec.fa_api.model;
 
+import org.checkerframework.common.aliasing.qual.Unique;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-//@Table(uniqueConstraints={@UniqueConstraint(columnNames={"iata_code","icao_code"})}) //todo add message
 public class Airport {
     private Integer id;
+    private Integer openFlightId;
     private String name;
     private City city;
     private String iataCode;
@@ -26,7 +27,8 @@ public class Airport {
     public Airport() {
     }
 
-    public Airport(String name, City city, String iataCode, String icaoCode, Double latitude, Double longitude, Double altitude, String type, String dst, String dbTimezone, Double utcTimeOffset) {
+    public Airport(Integer openFlightId, String name, City city, String iataCode, String icaoCode, Double latitude, Double longitude, Double altitude, Double utcTimeOffset, String type, String dst, String dbTimezone) {
+        this.openFlightId = openFlightId;
         this.name = name;
         this.city = city;
         this.iataCode = iataCode;
@@ -34,11 +36,10 @@ public class Airport {
         this.latitude = latitude;
         this.longitude = longitude;
         this.altitude = altitude;
+        this.utcTimeOffset = utcTimeOffset;
         this.type = type;
         this.dst = dst;
         this.dbTimezone = dbTimezone;
-        this.utcTimeOffset = utcTimeOffset;
-        //this.active = 1; //default column is not working?
     }
 
     @Id
@@ -50,6 +51,19 @@ public class Airport {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+
+
+    @Basic
+    @Column(name = "openFlightId", nullable = false)
+    @Unique
+    public Integer getOpenFlightId() {
+        return openFlightId;
+    }
+
+    public void setOpenFlightId(Integer openFlightId) {
+        this.openFlightId = openFlightId;
     }
 
     @Basic
@@ -181,6 +195,7 @@ public class Airport {
         if (o == null || getClass() != o.getClass()) return false;
         Airport airport = (Airport) o;
         return Objects.equals(id, airport.id) &&
+                Objects.equals(openFlightId, airport.openFlightId) &&
                 Objects.equals(name, airport.name) &&
                 Objects.equals(city, airport.city) &&
                 Objects.equals(iataCode, airport.iataCode) &&
@@ -188,20 +203,23 @@ public class Airport {
                 Objects.equals(latitude, airport.latitude) &&
                 Objects.equals(longitude, airport.longitude) &&
                 Objects.equals(altitude, airport.altitude) &&
-                type == airport.type &&
-                dst == airport.dst &&
+                Objects.equals(utcTimeOffset, airport.utcTimeOffset) &&
+                Objects.equals(type, airport.type) &&
+                Objects.equals(dst, airport.dst) &&
+                Objects.equals(dbTimezone, airport.dbTimezone) &&
                 Objects.equals(active, airport.active);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, city, iataCode, icaoCode, latitude, longitude, altitude, type, dst, active);
+        return Objects.hash(id, openFlightId, name, city, iataCode, icaoCode, latitude, longitude, altitude, utcTimeOffset, type, dst, dbTimezone, active);
     }
 
     @Override
     public String toString() {
         return "Airport{" +
                 "id=" + id +
+                ", openFlightId=" + openFlightId +
                 ", name='" + name + '\'' +
                 ", city=" + city +
                 ", iataCode='" + iataCode + '\'' +
@@ -209,8 +227,10 @@ public class Airport {
                 ", latitude=" + latitude +
                 ", longitude=" + longitude +
                 ", altitude=" + altitude +
-                ", type=" + type +
-                ", dst=" + dst +
+                ", utcTimeOffset=" + utcTimeOffset +
+                ", type='" + type + '\'' +
+                ", dst='" + dst + '\'' +
+                ", dbTimezone='" + dbTimezone + '\'' +
                 ", active=" + active +
                 '}';
     }

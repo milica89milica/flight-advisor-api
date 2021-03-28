@@ -39,18 +39,18 @@ public class RouteService {
         List<Route> routes = new ArrayList<>();
         for (RouteExtended routeExtended : routesExtended) {
             Route route = new Route();
-            route.setPrice(routeExtended.getPrice());
 
-            Airport sourceAirport = airportService.findById(routeExtended.getSourceAirportId());
+
+            Airport sourceAirport = airportService.findByOpenFlightId(routeExtended.getSourceAirportId());
             if (sourceAirport == null) {
                 throw new HttpException(messageSource.getMessage("{notExists.sourceAirport}", null, null), HttpStatus.NOT_FOUND);
             }
-            route.setSourceAirport(sourceAirport);
 
-            Airport destinationAirport = airportService.findById(routeExtended.getDestinationAirportId());
+            Airport destinationAirport = airportService.findByOpenFlightId(routeExtended.getDestinationAirportId());
             if (destinationAirport == null) {
                 throw new HttpException(messageSource.getMessage("{notExists.destinationAirport}", null, null), HttpStatus.NOT_FOUND);
             }
+            route.setSourceAirport(sourceAirport);
             route.setDestinationAirport(destinationAirport);
 
             //airline
@@ -58,6 +58,8 @@ public class RouteService {
             airline.setId(routeExtended.getAirlineId());
             airline.setIataCode(routeExtended.getAirlineCode());
             route.setAirline(airline);
+
+            route.setPrice(routeExtended.getPrice());
 
             if (routeExtended.getCodeshare().isEmpty()) {
                 route.setCodeshare((byte) 0);

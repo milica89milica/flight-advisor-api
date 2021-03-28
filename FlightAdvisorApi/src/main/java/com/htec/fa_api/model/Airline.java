@@ -8,18 +8,24 @@ import java.util.Objects;
 
 @Entity
 public class Airline {
-    private Integer id; //from file
+    private Integer id;
+    private Integer openFlightId;  //from file
+    private String name;
+    private String alias;
     private String iataCode;
     private String icaoCode;
     private Country country;
     private String description;
+    //todo add still operating
     private Byte active;
 
     public Airline() {
     }
 
-    public Airline(Integer id, String iataCode, String icaoCode, Country country, String description) {
-        this.id = id;
+    public Airline(Integer openFlightId, String name, String alias, String iataCode, String icaoCode, Country country, String description) {
+        this.openFlightId = openFlightId;
+        this.name = name;
+        this.alias = alias;
         this.iataCode = iataCode;
         this.icaoCode = icaoCode;
         this.country = country;
@@ -37,8 +43,39 @@ public class Airline {
         this.id = id;
     }
 
+
     @Basic
-    @Column(name = "iata_code", nullable = false)
+    @Column(name = "openFlightId", nullable = false)
+    public Integer getOpenFlightId() {
+        return openFlightId;
+    }
+
+    public void setOpenFlightId(Integer openFlightId) {
+        this.openFlightId = openFlightId;
+    }
+
+    @Basic
+    @Column(name = "name", nullable = false)
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Basic
+    @Column(name = "alias", nullable = true)
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
+    @Basic
+    @Column(name = "iata_code", nullable = true)
     public String getIataCode() {
         return iataCode;
     }
@@ -48,7 +85,7 @@ public class Airline {
     }
 
     @Basic
-    @Column(name = "icao_code", nullable = false)
+    @Column(name = "icao_code", nullable = true) //example N/A
     public String getIcaoCode() {
         return icaoCode;
     }
@@ -58,7 +95,7 @@ public class Airline {
     }
 
     @ManyToOne
-    @JoinColumn(name = "country", nullable = false)
+    @JoinColumn(name = "country", nullable = true)
     public Country getCountry() {
         return country;
     }
@@ -68,7 +105,7 @@ public class Airline {
     }
 
     @Basic
-    @Column(name = "description", nullable = false)
+    @Column(name = "description", nullable = true)
     public String getDescription() {
         return description;
     }
@@ -94,6 +131,9 @@ public class Airline {
         if (o == null || getClass() != o.getClass()) return false;
         Airline airline = (Airline) o;
         return Objects.equals(id, airline.id) &&
+                Objects.equals(openFlightId, airline.openFlightId) &&
+                Objects.equals(name, airline.name) &&
+                Objects.equals(alias, airline.alias) &&
                 Objects.equals(iataCode, airline.iataCode) &&
                 Objects.equals(icaoCode, airline.icaoCode) &&
                 Objects.equals(country, airline.country) &&
@@ -103,13 +143,16 @@ public class Airline {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, iataCode, icaoCode, country, description, active);
+        return Objects.hash(id, openFlightId, name, alias, iataCode, icaoCode, country, description, active);
     }
 
     @Override
     public String toString() {
         return "Airline{" +
                 "id=" + id +
+                ", openFlightId=" + openFlightId +
+                ", name='" + name + '\'' +
+                ", alias='" + alias + '\'' +
                 ", iataCode='" + iataCode + '\'' +
                 ", icaoCode='" + icaoCode + '\'' +
                 ", country=" + country +

@@ -8,7 +8,7 @@ import java.util.Objects;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AirportExtended implements Serializable {
-    private Integer id;
+    private Integer id; //id from open flights
     private String name;
     private String cityName;
     private String countryName;

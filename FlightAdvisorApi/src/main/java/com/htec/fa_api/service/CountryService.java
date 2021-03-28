@@ -27,4 +27,8 @@ public class CountryService {
     public Country getById(Integer id) {
         return countryRepository.getById(id);
     }
+
+    public Country findByName(String name){ //as. Name are unique?
+        return countryRepository.findByNameAndActive(name,(byte)1);
+    }
 }

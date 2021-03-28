@@ -37,12 +37,12 @@ public class AirportService {
     public List<Airport> saveAll(List<AirportExtended> airportsExtended) throws HttpException {
         List<Airport> airports = new ArrayList<>();
         for (AirportExtended airportExtended : airportsExtended) {
-            Airport airport = airportRepository.getByIataCodeAndIcaoCodeAndActive(airportExtended.getIataCode(), airportExtended.getIcaoCode(), (byte) 1);
+            Airport airport = airportRepository.getByIataCodeAndIcaoCodeAndActive(airportExtended.getIataCode(), airportExtended.getIcaoCode(), (byte) 1); //todo suvisno!
             if (airport == null) { //airport is not already uploaded
                 City city = cityService.findByNameAndCountry(airportExtended.getCityName(), airportExtended.getCountryName());
                 if (city != null) {
                     airport = new Airport();
-                    airport.setId(airportExtended.getId()); //already suplied
+                    airport.setOpenFlightId(airportExtended.getId());
                     airport.setName(airportExtended.getName());
                     airport.setIataCode(airportExtended.getIataCode());
                     airport.setIcaoCode(airportExtended.getIcaoCode());
@@ -78,6 +78,11 @@ public class AirportService {
 
     public Airport findById(Integer id) {
         return airportRepository.findByIdAndActive(id, (byte) 1);
+    }
+
+
+    public Airport findByOpenFlightId(Integer openFlightId){
+        return airportRepository.findByOpenFlightIdAndActive(openFlightId, (byte)1);
     }
 
 }
