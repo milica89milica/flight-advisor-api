@@ -7,8 +7,11 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"name", "country"})}) //todo add message
@@ -21,7 +24,7 @@ public class City {
     private Byte active;
 
     //@BatchSize(size=16)
-    private List<Comment> commentList;
+    private List<Comment> commentList; //rename to comments
 
     public City() {
     }
@@ -108,12 +111,16 @@ public class City {
         this.active = active;
     }
 
-    @JsonManagedReference
+    @JsonManagedReference(value="citys-comments")
     @OneToMany(mappedBy = "city", fetch = FetchType.LAZY)
     @OrderBy("updated DESC")
     @Where(clause = "active = true") //show only active!
     public List<Comment> getCommentList() {
         return commentList;
+    }
+
+    public List<Comment> getCommentList(int nLatest) {
+        return commentList.stream().limit(nLatest).collect(Collectors.toList());
     }
 
     public void setCommentList(List<Comment> commentList) {

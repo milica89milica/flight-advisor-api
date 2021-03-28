@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CommentService {
@@ -29,11 +30,7 @@ public class CommentService {
     }
 
     public List<Comment> getAll() {
-        return commentRepository.getAllByActive((byte) 1);
-    }
-
-    public List<Comment> findByCity(Integer cityId) {
-        return commentRepository.getAllByCityIdAndActive(cityId, (byte) 1);
+        return commentRepository.getAllByActiveOrderByUpdatedDesc((byte) 1);
     }
 
     @Transactional(rollbackFor = Exception.class) //after insert comment are available on /user also
@@ -81,4 +78,11 @@ public class CommentService {
         commentRepository.deleteById(id); //there is no need for soft delete
         return comment.get();
     }
+
+    public List<Comment> getAllLatest(Integer nLatest){
+        List<Comment> comments = commentRepository.getAllByActiveOrderByUpdatedDesc((byte)1);
+        return comments.stream().limit(nLatest).collect(Collectors.toList());
+    }
+
+
 }

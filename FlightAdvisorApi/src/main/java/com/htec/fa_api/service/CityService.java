@@ -31,6 +31,7 @@ public class CityService {
         return cityRepository.getAllByActive((byte) 1);
     }
 
+
     public City findByNameAndCountry(String name, String countryName) {
         return cityRepository.findByNameAndCountryNameAndActive(name, countryName, (byte) 1);
     }
@@ -66,6 +67,10 @@ public class CityService {
         }
         city.get().setActive((byte) 0);
         return cityRepository.save(city.get());
+    }
+
+    public List<City> getByNameWithComments(String name) {
+        return cityRepository.findAllByActiveAndNameStartingWith((byte) 1, name);
     }
 
 }

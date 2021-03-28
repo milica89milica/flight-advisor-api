@@ -1,6 +1,5 @@
 package com.htec.fa_api.repository;
 
-
 import com.htec.fa_api.model.City;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -12,4 +11,5 @@ public interface CityRepository extends JpaRepository<City, Integer> {
 
     List<City> getAllByActive(Byte active);
     City findByNameAndCountryNameAndActive(String name, String countryName, Byte active);
+    List<City> findAllByActiveAndNameStartingWith(Byte active, String name);
  }

@@ -1,6 +1,7 @@
 package com.htec.fa_api.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -27,7 +28,7 @@ public class Comment {
         this.title = title;
         this.details = details;
         this.created = created;
-        this.updated = updated;
+        this.updated = created; //simplicity
         this.city = city;
         this.user = user;
     }
@@ -65,6 +66,7 @@ public class Comment {
     }
 
     @CreationTimestamp
+    @JsonFormat(pattern = "dd.MM.yyyy. HH:mm")
     public Timestamp getCreated() {
         return created;
     }
@@ -74,6 +76,7 @@ public class Comment {
     }
 
     @UpdateTimestamp
+    @JsonFormat(pattern = "dd.MM.yyyy. HH:mm")
     public Timestamp getUpdated() {
         return updated;
     }
@@ -82,7 +85,7 @@ public class Comment {
         this.updated = updated;
     }
 
-    @JsonBackReference
+    @JsonBackReference(value = "citys-comments")
     @ManyToOne
     @JoinColumn(name = "city", nullable = false)
     @NotNull(message = "{notNull.city}")
@@ -94,6 +97,7 @@ public class Comment {
         this.city = city;
     }
 
+    @JsonBackReference(value = "users-comments")
     @ManyToOne
     @JoinColumn(name = "user", nullable = false)
     @NotNull(message = "{notNull.user}")
@@ -115,6 +119,5 @@ public class Comment {
     public void setActive(Byte active) {
         this.active = active;
     }
-
 
 }

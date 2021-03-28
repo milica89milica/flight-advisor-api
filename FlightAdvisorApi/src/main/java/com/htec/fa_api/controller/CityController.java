@@ -9,6 +9,7 @@ import com.htec.fa_api.service.AirportService;
 import com.htec.fa_api.service.CityService;
 import com.htec.fa_api.service.CommentService;
 import com.htec.fa_api.service.CountryService;
+import com.htec.fa_api.util.ActionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,7 @@ public class CityController {
     private final CityService cityService;
     private final CommentService commentService;
 
-    public CityController( MessageSource messageSource, CountryService countryService, CityService cityService, CommentService commentService) {
+    public CityController(MessageSource messageSource, CountryService countryService, CityService cityService, CommentService commentService) {
         this.messageSource = messageSource;
         this.countryService = countryService;
         this.cityService = cityService;
@@ -52,13 +53,14 @@ public class CityController {
         return new ResponseEntity<>(cityService.getAll(), HttpStatus.OK);
     }
 
+
     @PostMapping
     public ResponseEntity<City> insert(@RequestBody @Valid City object, Errors errors) throws HttpException {
         if (!countryService.existsById(object.getCountry().getId())) {
             throw new HttpException(messageSource.getMessage("notExists.country", null, null), HttpStatus.BAD_REQUEST);
         }
         City city = cityService.insert(object);
-        loggerService.logAction(city, "CREATE", "logger.create");
+        loggerService.logAction(city, ActionType.CREATE.name(), "logger.create");
         return new ResponseEntity<>(city, HttpStatus.CREATED);
     }
 
@@ -69,23 +71,53 @@ public class CityController {
             throw new HttpException(messageSource.getMessage("notExists.city", null, null), HttpStatus.NOT_FOUND);
         }
         City updated = cityService.update(object);
-        loggerService.logAction(updated, "UPDATE", "logger.update");
+        loggerService.logAction(updated, ActionType.UPDATE.name(), "logger.update");
         return new ResponseEntity<>(updated, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<City> delete(@PathVariable Integer id) throws HttpException {
         City city = cityService.delete(id);
-        loggerService.logAction(city, "DELETE", "logger.delete");
+        loggerService.logAction(city, ActionType.DELETE.name(), "logger.delete");
         return new ResponseEntity<>(city, HttpStatus.OK);
     }
 
     //comments for concrete city
     @GetMapping
     @RequestMapping("/{id}/comments")
-    public ResponseEntity<List<Comment>> getAllComments(@PathVariable Integer id){
-        return new ResponseEntity<>(commentService.findByCity(id), HttpStatus.OK);
+    public ResponseEntity<List<Comment>> getAllComments(@PathVariable Integer id) throws HttpException {
+        Optional<City> city = cityService.findById(id);
+        if (!city.isPresent()) {
+            throw new HttpException(messageSource.getMessage("notExists.city", null, null), HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(city.get().getCommentList(), HttpStatus.OK);
     }
+
+    //get latest n comments for concrete city
+    @GetMapping
+    @RequestMapping("/{id}/comments/{nLatest}")
+    public ResponseEntity<List<Comment>> getLatestComments(@PathVariable Integer id, @PathVariable Integer nLatest) throws HttpException {
+        Optional<City> city = cityService.findById(id);
+        if (!city.isPresent()) {
+            throw new HttpException(messageSource.getMessage("notExists.city", null, null), HttpStatus.NOT_FOUND);
+        }
+        List<Comment> list = city.get().getCommentList(nLatest);
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+
+    //get all comments for cities that match
+    @GetMapping
+    @RequestMapping("/search/{pattern}/comments")
+    public ResponseEntity<List<City>> getByNameWithComments(@PathVariable String pattern) {
+        return new ResponseEntity<>(cityService.getByNameWithComments(pattern), HttpStatus.OK);
+    }
+
+
+//    @GetMapping
+//    @RequestMapping("/search/{name}/comments/{nLatest}") //todo
+
+//    @GetMapping
+//    @RequestMapping("/{id}/comments") //todo
 
 
 }

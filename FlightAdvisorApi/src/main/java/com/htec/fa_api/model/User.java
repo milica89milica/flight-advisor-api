@@ -1,15 +1,22 @@
 package com.htec.fa_api.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.checkerframework.common.aliasing.qual.Unique;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.Where;
 import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Entity
 @Validated
@@ -25,6 +32,8 @@ public class User {
     private UserGroup userGroup; //assume user can be admin or regular
     private Byte enabled;
     private Byte active;
+
+    private List<Comment> comments;
 
     public User() {
     }
@@ -113,6 +122,7 @@ public class User {
     }
 
     @CreationTimestamp
+    @JsonFormat(pattern = "dd.MM.yyyy. HH:mm")
     public Timestamp getCreated() {
         return created;
     }
@@ -122,6 +132,7 @@ public class User {
     }
 
     @UpdateTimestamp
+    @JsonFormat(pattern = "dd.MM.yyyy. HH:mm")
     public Timestamp getUpdated() {
         return updated;
     }
@@ -150,6 +161,22 @@ public class User {
 
     public void setActive(Byte active) {
         this.active = active;
+    }
+
+    @JsonManagedReference(value="users-comments")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OrderBy("updated DESC")
+    @Where(clause = "active = true") //show only active!
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public List<Comment> getComments(int nLatest) {
+        return comments.stream().limit(nLatest).collect(Collectors.toList());
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 
     @Override

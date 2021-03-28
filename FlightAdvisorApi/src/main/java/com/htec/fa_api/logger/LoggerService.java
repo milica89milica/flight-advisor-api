@@ -41,10 +41,6 @@ public class LoggerService<T> {
         return null;
     }
 
-    public void logSpecificAction(String actionType, String actionDetails, String tableName) {
-        //todo
-    }
-
     public List<Logger> getAll() {
         return loggerRepository.getAll();
     }

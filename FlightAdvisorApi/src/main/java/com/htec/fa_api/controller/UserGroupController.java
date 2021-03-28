@@ -7,6 +7,7 @@ import com.htec.fa_api.model.User;
 import com.htec.fa_api.model.UserGroup;
 import com.htec.fa_api.service.UserGroupService;
 import com.htec.fa_api.service.UserService;
+import com.htec.fa_api.util.ActionType;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,21 +49,21 @@ public class UserGroupController {
     @PostMapping
     public ResponseEntity<UserGroup> insert(@RequestBody @Valid UserGroup object) throws HttpException {
         UserGroup userGroup = userGroupService.insert(object);
-        loggerService.logAction(userGroup,"CREATE","logger.create");
+        loggerService.logAction(userGroup, ActionType.CREATE.name(),"logger.create");
         return new ResponseEntity<>(userGroup, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{id}")
     public ResponseEntity<UserGroup> update(@PathVariable("id") Integer id, @Valid @RequestBody UserGroup object) throws HttpException {
         UserGroup userGroup = userGroupService.update(object);
-        loggerService.logAction(userGroup,"UPDATE","logger.update");
+        loggerService.logAction(userGroup,ActionType.UPDATE.name(),"logger.update");
         return new ResponseEntity<>(userGroup, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<UserGroup> delete(@PathVariable Integer id) throws HttpException {
         UserGroup userGroup = userGroupService.delete(id);
-        loggerService.logAction(userGroup,"DELETE","logger.delete");
+        loggerService.logAction(userGroup,ActionType.DELETE.name(),"logger.delete");
         return new ResponseEntity<>(userGroup, HttpStatus.OK);
     }
 }
