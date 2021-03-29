@@ -88,7 +88,7 @@ public class Airport {
     }
 
     @Basic
-    @Column(name = "iata_code", nullable = false)
+    @Column(name = "iata_code", nullable = true)
     public String getIataCode() {
         return iataCode;
     }
@@ -180,7 +180,7 @@ public class Airport {
     }
 
     @Basic
-    @Column(name = "utcTimeOffset", nullable = false)
+    @Column(name = "utcTimeOffset", nullable = true) //some of data are allowed to be nullable because their value is not supplied
     public Double getUtcTimeOffset() {
         return utcTimeOffset;
     }

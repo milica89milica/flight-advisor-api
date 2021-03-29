@@ -4,6 +4,7 @@ package com.htec.fa_api.model;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class Route {
@@ -92,8 +93,8 @@ public class Route {
         this.stops = stops;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "equipment", nullable = false)
+    @ManyToOne(cascade=CascadeType.ALL)
+    @JoinColumn(name = "equipment", nullable = true)
     public AircraftType getEquipment() {
         return equipment;
     }
@@ -121,5 +122,42 @@ public class Route {
 
     public void setActive(Byte active) {
         this.active = active;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Route route = (Route) o;
+        return Objects.equals(id, route.id) &&
+                Objects.equals(airline, route.airline) &&
+                Objects.equals(sourceAirport, route.sourceAirport) &&
+                Objects.equals(destinationAirport, route.destinationAirport) &&
+                Objects.equals(codeshare, route.codeshare) &&
+                Objects.equals(stops, route.stops) &&
+                Objects.equals(equipment, route.equipment) &&
+                Objects.equals(price, route.price) &&
+                Objects.equals(active, route.active);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, airline, sourceAirport, destinationAirport, codeshare, stops, equipment, price, active);
+    }
+
+    @Override
+    public String toString() {
+        return "Route{" +
+                "id=" + id +
+                ", airline=" + airline +
+                ", sourceAirport=" + sourceAirport +
+                ", destinationAirport=" + destinationAirport +
+                ", codeshare=" + codeshare +
+                ", stops=" + stops +
+                ", equipment=" + equipment +
+                ", price=" + price +
+                ", active=" + active +
+                '}';
     }
 }

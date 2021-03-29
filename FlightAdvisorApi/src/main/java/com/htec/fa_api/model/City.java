@@ -33,9 +33,10 @@ public class City {
         this.name = name;
     }
 
-    public City(String name, Country country) {
+    public City(String name, Country country, String description) {
         this.name = name;
         this.country = country;
+        this.description = description;
     }
 
     public City(String name, Country country, String description, String postalCode) {
@@ -70,7 +71,7 @@ public class City {
 
     @ManyToOne
     @JoinColumn(name = "country", nullable = false)
-    @NotNull(message = "{NotNull.country}")
+    @NotNull(message = "{notNull.country}")
     public Country getCountry() {
         return country;
     }
@@ -80,8 +81,8 @@ public class City {
     }
 
     @Basic
-    @Column(name = "description", nullable = true)
-    @NotNull(message = "{NotNull.description}") //from specification
+    @Column(name = "description", nullable = false)
+    @NotNull(message = "{notNull.description}") //from specification
     public String getDescription() {
         return description;
     }

@@ -45,10 +45,10 @@ public class AirlineService {
                 airline = new Airline();
                 airline.setName(airlineExtended.getName());
                 airline.setOpenFlightId(airlineExtended.getOpenFlightId());
-                if (airlineExtended.getIataCode()!=null && !airlineExtended.getIataCode().equals("-")) { //todo check all iata and icao inputs
+                if (airlineExtended.getIataCode() != null && !airlineExtended.getIataCode().equals("-")) { //todo check all iata and icao inputs
                     airline.setIataCode(airlineExtended.getIataCode());
                 }
-                if (airlineExtended.getIcaoCode()!=null && !airlineExtended.getIcaoCode().equals("N/A")) {
+                if (airlineExtended.getIcaoCode() != null && !airlineExtended.getIcaoCode().equals("N/A")) {
                     airline.setIcaoCode(airlineExtended.getIcaoCode());
                 }
                 airline.setAlias(airlineExtended.getAlias());
@@ -59,10 +59,14 @@ public class AirlineService {
                 airlines.add(airline);
                 log.info(messageSource.getMessage("created.airline", null, null) + " for " + airline);
             } else {
-                log.info(messageSource.getMessage("alreadyExists.airline", null, null) + " for " + airlineExtended);
+                log.error(messageSource.getMessage("alreadyExists.airline", null, null) + " for " + airlineExtended);
             }
 
         }
         return airlineRepository.saveAll(airlines);
+    }
+
+    public Airline findByOpenFlightId(Integer openFlightId) {
+        return airlineRepository.findByOpenFlightIdAndActive(openFlightId, (byte) 1);
     }
 }

@@ -13,7 +13,7 @@ import java.util.List;
 public class LoggerService<T> {
 
     @Value("${application.logger.enabled}")
-    private static boolean loggerEnabled;
+    private boolean loggerEnabled;
 
     private final LoggerRepository loggerRepository;
     private final UserService userService;

@@ -11,7 +11,7 @@ import java.util.List;
 public interface CountryRepository extends JpaRepository<Country, Integer> {
 
     List<Country> getAllByActive(Byte active);
-    Country findByNameAndActive(String name, Byte active);
+    Country findFirstByNameAndActive(String name, Byte active); //in phase testing
 
     Country getById(Integer id);
 

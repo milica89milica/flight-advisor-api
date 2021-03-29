@@ -10,6 +10,10 @@ import com.htec.fa_api.service.CityService;
 import com.htec.fa_api.service.CommentService;
 import com.htec.fa_api.service.CountryService;
 import com.htec.fa_api.util.ActionType;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +29,8 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
+
+@Tag(name = "city", description = "City REST Controller")
 @RestController
 @RequestScope
 @RequestMapping("/city")
@@ -47,13 +53,19 @@ public class CityController {
         this.commentService = commentService;
     }
 
-
+    @Operation(summary = "View data for all cities", description = "", tags = {"city"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful data retrieval"),})
     @GetMapping
     public ResponseEntity<List<City>> getAll() {
         return new ResponseEntity<>(cityService.getAll(), HttpStatus.OK);
     }
 
 
+    @Operation(summary = "Adding a new city", description = "By calling this EP it is possible to add a new city. it is necessary to pre-select the country.", tags = {"city"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "The operation was successful and the user can preview the inserted city"),
+            @ApiResponse(responseCode = "400", description = "Bad request")})
     @PostMapping
     public ResponseEntity<City> insert(@RequestBody @Valid City object, Errors errors) throws HttpException {
         if (!countryService.existsById(object.getCountry().getId())) {
@@ -64,6 +76,11 @@ public class CityController {
         return new ResponseEntity<>(city, HttpStatus.CREATED);
     }
 
+    @Operation(summary = "Change data about the selected city", description = "By calling this EP it is possible to add a new city. it is necessary to pre-select the country.", tags = {"city"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "The operation was successful and the user can preview the updated city"),
+            @ApiResponse(responseCode = "400", description = "The code 400 is returned if the identifier of the selected country does not exist in the database as valid"),
+            @ApiResponse(responseCode = "404", description = "The provided city id does not exist in the database")})
     @PutMapping(value = "/{id}")
     public ResponseEntity<City> update(@PathVariable("id") Integer id, @Valid @RequestBody City object) throws HttpException {
         Optional<City> city = cityService.findById(id);
@@ -75,6 +92,11 @@ public class CityController {
         return new ResponseEntity<>(updated, HttpStatus.OK);
     }
 
+
+    @Operation(summary = "Delete the selected city", description = "A soft delete is performed", tags = {"city"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "The operation was successful and the user can preview the deleted city"),
+            @ApiResponse(responseCode = "404", description = "The provided city id does not exist in the database")})
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<City> delete(@PathVariable Integer id) throws HttpException {
         City city = cityService.delete(id);
@@ -118,6 +140,7 @@ public class CityController {
 
 //    @GetMapping
 //    @RequestMapping("/{id}/comments") //todo
+
 
 
 }

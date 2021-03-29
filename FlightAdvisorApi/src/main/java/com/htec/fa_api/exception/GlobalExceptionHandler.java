@@ -23,13 +23,13 @@ public class GlobalExceptionHandler { //todo
             className += constraintViolation.getRootBeanClass().getSimpleName();
         }
         ErrorMessage errorMessage = new ErrorMessage(message, HttpStatus.BAD_REQUEST.toString(), ex.getMessage());
-        return new ResponseEntity<ErrorMessage>(errorMessage, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = {HttpException.class})
     public ResponseEntity<ErrorMessage> handleHttpException(HttpException ex, WebRequest request) {
         ErrorMessage errorMessage = new ErrorMessage(ex.getData().toString(), HttpStatus.BAD_REQUEST.toString(), "");
-        return new ResponseEntity<ErrorMessage>(errorMessage, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
 
 

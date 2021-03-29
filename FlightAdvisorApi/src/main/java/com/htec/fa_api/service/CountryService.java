@@ -29,6 +29,6 @@ public class CountryService {
     }
 
     public Country findByName(String name){ //as. Name are unique?
-        return countryRepository.findByNameAndActive(name,(byte)1);
+        return countryRepository.findFirstByNameAndActive(name,(byte)1);
     }
 }

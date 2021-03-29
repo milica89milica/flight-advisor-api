@@ -13,9 +13,12 @@ public interface AirportRepository extends JpaRepository<Airport, Integer> {
 
     Airport findByIdAndActive(Integer id, Byte active);
 
-    Airport getByIataCodeAndIcaoCodeAndActive(String iataCode, String icaoCode, Byte active);
-
     Airport findByOpenFlightIdAndActive(Integer openFlightId, byte active);
+
+    List<Airport> getAllByCityIdAndActive(Integer cityId, byte active);
+
+
+
 
 
 }

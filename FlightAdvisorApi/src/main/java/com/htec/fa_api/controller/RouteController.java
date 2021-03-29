@@ -8,10 +8,7 @@ import com.htec.fa_api.service.RouteService;
 import com.htec.fa_api.util.CsvReader;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,5 +30,10 @@ public class RouteController {
     public ResponseEntity<List<Route>> uploadMultipart(@RequestParam("routes") MultipartFile file) throws IOException, HttpException {
         List<RouteExtended> routesExtended = CsvReader.read(RouteExtended.class, file.getInputStream());
         return new ResponseEntity<>(routeService.saveAll(routesExtended), HttpStatus.CREATED);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Route>> getAll() {
+        return new ResponseEntity<>(routeService.getAll(), HttpStatus.OK);
     }
 }

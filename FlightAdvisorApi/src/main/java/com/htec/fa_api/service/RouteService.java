@@ -6,11 +6,9 @@ import com.htec.fa_api.model.Airport;
 import com.htec.fa_api.model.Route;
 import com.htec.fa_api.model.extended.RouteExtended;
 import com.htec.fa_api.repository.RouteRepository;
-import org.aspectj.bridge.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.htec.fa_api.exception.HttpException;
@@ -27,54 +25,55 @@ public class RouteService {
 
     private final AirportService airportService;
 
-    private MessageSource messageSource;
+    private final MessageSource messageSource;
+    private final AirlineService airlineService;
 
-    public RouteService(RouteRepository routeRepository, AirportService airportService, MessageSource messageSource) {
+    public RouteService(RouteRepository routeRepository, AirportService airportService, MessageSource messageSource, AirlineService airlineService) {
         this.routeRepository = routeRepository;
         this.airportService = airportService;
         this.messageSource = messageSource;
+        this.airlineService = airlineService;
     }
 
     public List<Route> saveAll(List<RouteExtended> routesExtended) throws HttpException {
         List<Route> routes = new ArrayList<>();
         for (RouteExtended routeExtended : routesExtended) {
-            Route route = new Route();
-
-
+            Route route = new Route(); //route identifier? (sourceId, destinationId, airplaneId)
             Airport sourceAirport = airportService.findByOpenFlightId(routeExtended.getSourceAirportId());
-            if (sourceAirport == null) {
-                throw new HttpException(messageSource.getMessage("{notExists.sourceAirport}", null, null), HttpStatus.NOT_FOUND);
-            }
+            if (sourceAirport != null) {
+                Airport destinationAirport = airportService.findByOpenFlightId(routeExtended.getDestinationAirportId());
+                if (destinationAirport != null) {
+                    Airline airline = airlineService.findByOpenFlightId(routeExtended.getAirlineId());
+                    if (airline != null) {
+                        route.setSourceAirport(sourceAirport);
+                        route.setDestinationAirport(destinationAirport);
+                        route.setAirline(airline);
+                        route.setPrice(routeExtended.getPrice());
 
-            Airport destinationAirport = airportService.findByOpenFlightId(routeExtended.getDestinationAirportId());
-            if (destinationAirport == null) {
-                throw new HttpException(messageSource.getMessage("{notExists.destinationAirport}", null, null), HttpStatus.NOT_FOUND);
-            }
-            route.setSourceAirport(sourceAirport);
-            route.setDestinationAirport(destinationAirport);
+                        if (routeExtended.getCodeshare().isEmpty()) {
+                            route.setCodeshare((byte) 0);
+                        } else {
+                            route.setCodeshare((byte) 1);
+                        }
 
-            //airline
-            Airline airline = new Airline();
-            airline.setId(routeExtended.getAirlineId());
-            airline.setIataCode(routeExtended.getAirlineCode());
-            route.setAirline(airline);
+                        AircraftType equipment = new AircraftType();
+                        equipment.setIcaoCode(routeExtended.getEquipmentCode());
+                        route.setEquipment(equipment);
 
-            route.setPrice(routeExtended.getPrice());
+                        route.setStops(routeExtended.getStops());
 
-            if (routeExtended.getCodeshare().isEmpty()) {
-                route.setCodeshare((byte) 0);
+                        log.info(messageSource.getMessage("created.route", null, null) + " for " + route);
+                        routes.add(route);
+                    } else {
+                        log.error(messageSource.getMessage("notExists.airline", null, null) + " for " + route);
+                    }
+                } else {
+                    log.error(messageSource.getMessage("notExists.destinationAirport", null, null) + " for " + route);
+                }
+
             } else {
-                route.setCodeshare((byte) 1);
+                log.error(messageSource.getMessage("notExists.sourceAirport", null, null) + " for " + route);
             }
-
-            AircraftType equipment = new AircraftType();
-            equipment.setIcaoCode(routeExtended.getEquipmentCode());
-            route.setEquipment(equipment);
-
-            route.setStops(routeExtended.getStops());
-
-            log.info(messageSource.getMessage("{logger.create}", null, null), route);
-            routes.add(route);
 
         }
         return routeRepository.saveAll(routes);
