@@ -4,6 +4,10 @@ package com.htec.fa_api.service;
 import com.htec.fa_api.exception.HttpException;
 import com.htec.fa_api.model.UserGroup;
 import com.htec.fa_api.repository.UserGroupRepository;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -12,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+@CacheConfig(cacheNames = {"userGroups"})
 @Service
 public class UserGroupService {
     private final UserGroupRepository userGroupRepository;
@@ -22,6 +27,7 @@ public class UserGroupService {
         this.messageSource = messageSource;
     }
 
+    @Cacheable
     public List<UserGroup> getAll() {
         return userGroupRepository.getAllByActive((byte) 1);
     }
@@ -34,6 +40,7 @@ public class UserGroupService {
         return userGroupRepository.save(userGroup);
     }
 
+    @CachePut(key = "#object.id")
     @Transactional(rollbackFor = Exception.class)
     public UserGroup update(UserGroup object) throws HttpException {
         Optional<UserGroup> userGroup = userGroupRepository.findById(object.getId());
@@ -43,16 +50,18 @@ public class UserGroupService {
         return userGroupRepository.save(object); //check created, updated
     }
 
+    @CacheEvict(key = "#id")
     @Transactional(rollbackFor = Exception.class)
     public UserGroup delete(Integer id) throws HttpException {
         Optional<UserGroup> userGroup = userGroupRepository.findById(id);
-        if(!userGroup.isPresent()){
+        if (!userGroup.isPresent()) {
             throw new HttpException(messageSource.getMessage("notExists.userGroup", null, null), HttpStatus.NOT_FOUND);
         }
-        userGroup.get().setActive((byte)0);
+        userGroup.get().setActive((byte) 0);
         return userGroupRepository.save(userGroup.get());
     }
 
+    @Cacheable(key = "#id")
     public Optional<UserGroup> findById(Integer id) {
         return userGroupRepository.findById(id);
     }

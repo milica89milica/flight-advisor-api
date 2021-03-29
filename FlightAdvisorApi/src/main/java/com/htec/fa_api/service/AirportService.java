@@ -12,6 +12,8 @@ import com.htec.fa_api.util.DaylightSavingsTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
@@ -19,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@CacheConfig(cacheNames = {"airports"})
 @Service
 @PropertySource("classpath:application.properties")
 public class AirportService {
@@ -92,19 +94,21 @@ public class AirportService {
     }
 
 
+    @Cacheable
     public List<Airport> getAll() {
         return airportRepository.getAllByActive((byte) 1);
     }
 
+    @Cacheable(key = "#id")
     public Airport findById(Integer id) {
         return airportRepository.findByIdAndActive(id, (byte) 1);
     }
 
-
+    @Cacheable(key = "#openFlightId")
     public Airport findByOpenFlightId(Integer openFlightId) {
         return airportRepository.findByOpenFlightIdAndActive(openFlightId, (byte) 1);
     }
-
+    @Cacheable(key = "#cityId")
     public List<Airport> getAllByCity(Integer cityId) {
         return airportRepository.getAllByCityIdAndActive(cityId, (byte) 1);
     }

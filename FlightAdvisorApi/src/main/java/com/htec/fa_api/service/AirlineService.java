@@ -8,13 +8,15 @@ import com.htec.fa_api.model.extended.AirlineExtended;
 import com.htec.fa_api.repository.AirlineRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@CacheConfig(cacheNames = {"airlines"})
 @Service
 public class AirlineService {
 
@@ -32,6 +34,7 @@ public class AirlineService {
         this.countryService = countryService;
     }
 
+    @Cacheable
     public List<Airline> getAll() {
         return airlineRepository.getAllByActive((byte) 1);
     }
@@ -66,6 +69,7 @@ public class AirlineService {
         return airlineRepository.saveAll(airlines);
     }
 
+    @Cacheable(key = "#openFlightId")
     public Airline findByOpenFlightId(Integer openFlightId) {
         return airlineRepository.findByOpenFlightIdAndActive(openFlightId, (byte) 1);
     }

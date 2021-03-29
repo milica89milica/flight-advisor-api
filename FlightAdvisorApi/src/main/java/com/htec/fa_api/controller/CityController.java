@@ -39,18 +39,19 @@ public class CityController {
 
     private static final Logger log = LoggerFactory.getLogger(AirportService.class);
 
-    @Autowired
-    LoggerService loggerService;
+
+    private final LoggerService loggerService;
     private final MessageSource messageSource;
     private final CountryService countryService;
     private final CityService cityService;
     private final CommentService commentService;
 
-    public CityController(MessageSource messageSource, CountryService countryService, CityService cityService, CommentService commentService) {
+    public CityController(MessageSource messageSource, CountryService countryService, CityService cityService, CommentService commentService, LoggerService loggerService) {
         this.messageSource = messageSource;
         this.countryService = countryService;
         this.cityService = cityService;
         this.commentService = commentService;
+        this.loggerService = loggerService;
     }
 
     @Operation(summary = "View data for all cities", description = "", tags = {"city"})

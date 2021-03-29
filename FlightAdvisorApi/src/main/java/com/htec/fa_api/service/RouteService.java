@@ -6,8 +6,11 @@ import com.htec.fa_api.model.Airport;
 import com.htec.fa_api.model.Route;
 import com.htec.fa_api.model.extended.RouteExtended;
 import com.htec.fa_api.repository.RouteRepository;
+import com.htec.fa_api.util.GraphSearcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +19,7 @@ import com.htec.fa_api.exception.HttpException;
 import java.util.ArrayList;
 import java.util.List;
 
+@CacheConfig(cacheNames = {"routes"})
 @Service
 public class RouteService {
 
@@ -25,14 +29,17 @@ public class RouteService {
 
     private final AirportService airportService;
 
+    private final GraphSearcher graphSearcher;
+
     private final MessageSource messageSource;
     private final AirlineService airlineService;
 
-    public RouteService(RouteRepository routeRepository, AirportService airportService, MessageSource messageSource, AirlineService airlineService) {
+    public RouteService(RouteRepository routeRepository, AirportService airportService, MessageSource messageSource, AirlineService airlineService, GraphSearcher graphSearcher) {
         this.routeRepository = routeRepository;
         this.airportService = airportService;
         this.messageSource = messageSource;
         this.airlineService = airlineService;
+        this.graphSearcher = graphSearcher;
     }
 
     public List<Route> saveAll(List<RouteExtended> routesExtended) throws HttpException {
@@ -79,6 +86,7 @@ public class RouteService {
         return routeRepository.saveAll(routes);
     }
 
+    @Cacheable
     public List<Route> getAll() {
         return routeRepository.getAllByActive((byte) 1);
     }

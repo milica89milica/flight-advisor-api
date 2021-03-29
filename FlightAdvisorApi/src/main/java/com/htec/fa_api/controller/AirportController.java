@@ -28,11 +28,11 @@ public class AirportController {
     @PostMapping(value = "/upload", consumes = "multipart/form-data")
     public ResponseEntity<List<Airport>> uploadMultipart(@RequestParam("airports") MultipartFile file) throws IOException, HttpException {
         List<AirportExtended> airportsExtended = CsvReader.read(AirportExtended.class, file.getInputStream());
-        return new ResponseEntity<List<Airport>>(airportService.saveAll(airportsExtended), HttpStatus.CREATED);
+        return new ResponseEntity<>(airportService.saveAll(airportsExtended), HttpStatus.CREATED);
     }
 
     @GetMapping
     public ResponseEntity<List<Airport>> getAll() {
-        return new ResponseEntity<List<Airport>>(airportService.getAll(), HttpStatus.OK);
+        return new ResponseEntity<>(airportService.getAll(), HttpStatus.OK);
     }
 }

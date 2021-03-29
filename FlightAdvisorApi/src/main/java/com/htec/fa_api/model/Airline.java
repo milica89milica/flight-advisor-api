@@ -45,7 +45,7 @@ public class Airline {
 
 
     @Basic
-    @Column(name = "openFlightId", nullable = false)
+    @Column(name = "open_flight_id", nullable = false)
     public Integer getOpenFlightId() {
         return openFlightId;
     }

@@ -4,6 +4,10 @@ package com.htec.fa_api.service;
 import com.htec.fa_api.exception.HttpException;
 import com.htec.fa_api.model.City;
 import com.htec.fa_api.repository.CityRepository;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -11,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-
+@CacheConfig(cacheNames = {"cities"})
 @Service
 public class CityService {
 
@@ -27,11 +31,12 @@ public class CityService {
         this.countryService = countryService;
     }
 
+    @Cacheable
     public List<City> getAll() {
         return cityRepository.getAllByActive((byte) 1);
     }
 
-
+    @Cacheable(key = "#name + #countryName")
     public City findByNameAndCountry(String name, String countryName) {
         return cityRepository.findByNameAndCountryNameAndActive(name, countryName, (byte) 1);
     }
@@ -41,6 +46,7 @@ public class CityService {
         return cityRepository.save(city);
     }
 
+    @CachePut(key = "#object.id")
     @Transactional(rollbackFor = Exception.class)
     public City update(City object) throws HttpException {
         Optional<City> city = cityRepository.findById(object.getId());
@@ -55,10 +61,12 @@ public class CityService {
         return cityRepository.save(city.get());
     }
 
+    @Cacheable(key = "#id")
     public Optional<City> findById(Integer id) {
         return cityRepository.findById(id);
     }
 
+    @CacheEvict(key = "#id")
     @Transactional(rollbackFor = Exception.class)
     public City delete(Integer id) throws HttpException {
         Optional<City> city = cityRepository.findById(id);
@@ -69,6 +77,7 @@ public class CityService {
         return cityRepository.save(city.get());
     }
 
+    @Cacheable(key = "#name")
     public List<City> getByNameWithComments(String name) {
         return cityRepository.findAllByActiveAndNameStartingWith((byte) 1, name);
     }
