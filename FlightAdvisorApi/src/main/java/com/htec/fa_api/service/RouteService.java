@@ -29,17 +29,14 @@ public class RouteService {
 
     private final AirportService airportService;
 
-    private final GraphSearcher graphSearcher;
-
     private final MessageSource messageSource;
     private final AirlineService airlineService;
 
-    public RouteService(RouteRepository routeRepository, AirportService airportService, MessageSource messageSource, AirlineService airlineService, GraphSearcher graphSearcher) {
+    public RouteService(RouteRepository routeRepository, AirportService airportService, MessageSource messageSource, AirlineService airlineService) {
         this.routeRepository = routeRepository;
         this.airportService = airportService;
         this.messageSource = messageSource;
         this.airlineService = airlineService;
-        this.graphSearcher = graphSearcher;
     }
 
     public List<Route> saveAll(List<RouteExtended> routesExtended) throws HttpException {

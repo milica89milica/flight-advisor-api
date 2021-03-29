@@ -24,7 +24,6 @@ import java.util.Optional;
 @RequestMapping("/travel-estimate")
 public class TravelEstimateController {
 
-    private final RouteService routeService;
     private final CityService cityService;
     private final MessageSource messageSource;
     private final AirportService airportService;
@@ -32,8 +31,7 @@ public class TravelEstimateController {
 
     private final GraphSearcher graphSearcher;
 
-    public TravelEstimateController(RouteService routeService, CityService cityService, MessageSource messageSource, AirportService airportService, GraphSearcher graphSearcher) {
-        this.routeService = routeService;
+    public TravelEstimateController(CityService cityService, MessageSource messageSource, AirportService airportService, GraphSearcher graphSearcher) {
         this.cityService = cityService;
         this.messageSource = messageSource;
         this.airportService = airportService;

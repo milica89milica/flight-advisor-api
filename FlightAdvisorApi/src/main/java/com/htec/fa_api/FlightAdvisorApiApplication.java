@@ -8,8 +8,8 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 
 @ServletComponentScan
 @EnableConfigurationProperties
-@SpringBootApplication(exclude = SecurityAutoConfiguration.class)
-//@SpringBootApplication
+//@SpringBootApplication(exclude = SecurityAutoConfiguration.class)
+@SpringBootApplication
 public class FlightAdvisorApiApplication {
     public static void main(String[] args) {
         SpringApplication.run(FlightAdvisorApiApplication.class, args);
