@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.RequestScope;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -124,7 +125,7 @@ public class CityController {
         if (!city.isPresent()) {
             throw new HttpException(messageSource.getMessage("notExists.city", null, null), HttpStatus.NOT_FOUND);
         }
-        List<Comment> list = city.get().getCommentList(nLatest);
+        List<Comment> list = city.get().getCommentList(nLatest); //comment have info about city
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
@@ -136,12 +137,16 @@ public class CityController {
     }
 
 
-//    @GetMapping
-//    @RequestMapping("/search/{name}/comments/{nLatest}") //todo
-
-//    @GetMapping
-//    @RequestMapping("/{id}/comments") //todo
-
-
+    @GetMapping
+    @RequestMapping("/search/{pattern}/comments/{nLatest}")
+    public ResponseEntity<List<Comment>> getByNameWithLatestComments(@PathVariable String pattern, Integer nLatest) {
+        List<City> matches = cityService.getByNameWithComments(pattern);
+        List<Comment> comments = new ArrayList<>();
+        for(City city:matches){
+            comments.addAll(city.getCommentList(nLatest));
+        }
+        return new ResponseEntity<>(comments, HttpStatus.OK);
+    }
+    
 
 }
