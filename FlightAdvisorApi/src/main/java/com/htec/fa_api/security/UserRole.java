@@ -1,6 +1,6 @@
 package com.htec.fa_api.security;
 
-public enum UserRole {
+public enum UserRole { //authorities ROLE PREFIX
     USER("USER"),
     ADMIN("ADMIN");
 
@@ -8,5 +8,10 @@ public enum UserRole {
 
     UserRole(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

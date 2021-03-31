@@ -1,6 +1,5 @@
 package com.htec.fa_api.logger;
 
-import com.htec.fa_api.security.AuthenticationFacade;
 import com.htec.fa_api.service.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -18,13 +17,11 @@ public class LoggerService<T> {
     private final LoggerRepository loggerRepository;
     private final UserService userService;
     private final MessageSource messageSource;
-    private final AuthenticationFacade authenticationFacade;
 
-    public LoggerService(LoggerRepository loggerRepository, UserService userService, MessageSource messageSource, AuthenticationFacade authenticationFacade) {
+    public LoggerService(LoggerRepository loggerRepository, UserService userService, MessageSource messageSource) {
         this.loggerRepository = loggerRepository;
         this.userService = userService;
         this.messageSource = messageSource;
-        this.authenticationFacade = authenticationFacade;
     }
 
     public Logger logAction(T object, String actionType, String message) {

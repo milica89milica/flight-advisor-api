@@ -2,8 +2,10 @@ package com.htec.fa_api.service;
 
 
 import com.htec.fa_api.exception.HttpException;
+import com.htec.fa_api.model.User;
 import com.htec.fa_api.model.UserGroup;
 import com.htec.fa_api.repository.UserGroupRepository;
+import com.htec.fa_api.repository.UserRepository;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -21,10 +23,12 @@ import java.util.Optional;
 public class UserGroupService {
     private final UserGroupRepository userGroupRepository;
     private final MessageSource messageSource;
+    private final UserRepository userRepository;
 
-    public UserGroupService(UserGroupRepository userGroupRepository, MessageSource messageSource) {
+    public UserGroupService(UserGroupRepository userGroupRepository, MessageSource messageSource, UserRepository userRepository) {
         this.userGroupRepository = userGroupRepository;
         this.messageSource = messageSource;
+        this.userRepository = userRepository;
     }
 
     @Cacheable
@@ -56,6 +60,10 @@ public class UserGroupService {
         Optional<UserGroup> userGroup = userGroupRepository.findById(id);
         if (!userGroup.isPresent()) {
             throw new HttpException(messageSource.getMessage("notExists.userGroup", null, null), HttpStatus.NOT_FOUND);
+        }
+        List<User> users = userRepository.getAllByUserGroupIdAndActive(userGroup.get().getId(),(byte)1);
+        if (!users.isEmpty()) {
+            throw new HttpException(messageSource.getMessage("cantDelete.relatedToUser", null, null), HttpStatus.NOT_ACCEPTABLE);
         }
         userGroup.get().setActive((byte) 0);
         return userGroupRepository.save(userGroup.get());

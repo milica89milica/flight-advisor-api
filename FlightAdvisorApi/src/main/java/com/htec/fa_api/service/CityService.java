@@ -2,7 +2,9 @@ package com.htec.fa_api.service;
 
 
 import com.htec.fa_api.exception.HttpException;
+import com.htec.fa_api.model.Airport;
 import com.htec.fa_api.model.City;
+import com.htec.fa_api.repository.AirportRepository;
 import com.htec.fa_api.repository.CityRepository;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
@@ -22,13 +24,15 @@ public class CityService {
     private final CityRepository cityRepository;
 
     private final MessageSource messageSource;
+    private final AirportRepository airportRepository;
 
     private final CountryService countryService;
 
-    public CityService(CityRepository cityRepository, MessageSource messageSource, CountryService countryService) {
+    public CityService(CityRepository cityRepository, MessageSource messageSource, CountryService countryService, AirportRepository airportRepository) {
         this.cityRepository = cityRepository;
         this.messageSource = messageSource;
         this.countryService = countryService;
+       this.airportRepository = airportRepository;
     }
 
     @Cacheable
@@ -72,6 +76,10 @@ public class CityService {
         Optional<City> city = cityRepository.findById(id);
         if (!city.isPresent()) {
             throw new HttpException(messageSource.getMessage("notExists.city", null, null), HttpStatus.NOT_FOUND);
+        }
+        List<Airport> airports = airportRepository.getAllByCityIdAndActive(city.get().getId(),(byte)1);
+        if(!airports.isEmpty()){
+            throw new HttpException(messageSource.getMessage("cantDelete.relatedToAirport", null, null), HttpStatus.NOT_ACCEPTABLE);
         }
         city.get().setActive((byte) 0);
         return cityRepository.save(city.get());

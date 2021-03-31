@@ -1,5 +1,6 @@
 package com.htec.fa_api.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -8,18 +9,21 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.security.SecureRandom;
 
 @Configuration
 @EnableWebSecurity
 public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     private final UserDetailsServiceImpl userDetailsServiceImpl;
 
 
-    public AppSecurityConfig(PasswordEncoder passwordEncoder, UserDetailsServiceImpl userDetailsServiceImpl) {
-        this.passwordEncoder = passwordEncoder;
+    public AppSecurityConfig(UserDetailsServiceImpl userDetailsServiceImpl) {
         this.userDetailsServiceImpl = userDetailsServiceImpl;
     }
 
@@ -37,20 +41,33 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    protected void configure(HttpSecurity http) throws Exception { //todo !!!
+    protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET,"/api/v1/city/**").hasRole("REGULAR")
-                .antMatchers("/api/v1/city/**").hasRole("ADMIN")
-                .antMatchers("/api/v1/userGroup/**").hasRole("ADMIN")
-                .antMatchers("/api/v1/user/**").hasRole("ADMIN")
-                .antMatchers("/","index").permitAll()
-                //swager ui
+                .antMatchers(HttpMethod.GET,"/route/**").hasAnyRole(UserRole.USER.toString(),UserRole.ADMIN.toString())
+                .antMatchers(HttpMethod.GET,"/airline/**").hasAnyRole(UserRole.USER.toString(),UserRole.ADMIN.toString())
+                .antMatchers(HttpMethod.GET,"/airport/**").hasAnyRole(UserRole.USER.toString(),UserRole.ADMIN.toString())
+                .antMatchers("/user/about","/user/changePassword").hasAnyRole(UserRole.USER.toString(), UserRole.ADMIN.toString())
+                .antMatchers("/userGroup/**").hasRole(UserRole.ADMIN.toString())
+                .antMatchers("/user/comments**").hasAnyRole(UserRole.ADMIN.toString(),UserRole.USER.toString())
+                .antMatchers("/comment/**").hasAnyRole(UserRole.USER.toString(), UserRole.ADMIN.toString())
+                .antMatchers("/travel-estimate/**").hasAnyRole(UserRole.ADMIN.toString(), UserRole.USER.toString())
+                .antMatchers("/route/**").hasRole(UserRole.ADMIN.toString())
+                .antMatchers("/airline/**").hasRole(UserRole.ADMIN.toString())
+                .antMatchers("/airport/**").hasRole(UserRole.ADMIN.toString())
+                .antMatchers("/user/**").hasRole(UserRole.ADMIN.toString())
+                .antMatchers("/", "index").permitAll()
+                //.antMatchers("swagger").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
                 .httpBasic()
+                .and()
+                .logout().clearAuthentication(true)
+                .deleteCookies("JSESSIONID")
+                .invalidateHttpSession(true)
+
         ;
     }
 }

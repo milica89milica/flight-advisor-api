@@ -78,7 +78,7 @@ public class CityController {
         return new ResponseEntity<>(city, HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Change data about the selected city", description = "By calling this EP it is possible to add a new city. it is necessary to pre-select the country.", tags = {"city"})
+    @Operation(summary = "Change data about the selected city", description = "By calling this EP it is possible to chnage data for the selected city.", tags = {"city"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "The operation was successful and the user can preview the updated city"),
             @ApiResponse(responseCode = "400", description = "The code 400 is returned if the identifier of the selected country does not exist in the database as valid"),
