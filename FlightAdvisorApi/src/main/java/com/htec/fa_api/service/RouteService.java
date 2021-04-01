@@ -6,7 +6,6 @@ import com.htec.fa_api.model.Airport;
 import com.htec.fa_api.model.Route;
 import com.htec.fa_api.model.extended.RouteExtended;
 import com.htec.fa_api.repository.RouteRepository;
-import com.htec.fa_api.util.GraphSearcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheConfig;
@@ -86,5 +85,11 @@ public class RouteService {
     @Cacheable
     public List<Route> getAll() {
         return routeRepository.getAllByActive((byte) 1);
+    }
+
+
+    public Route getCheapest(Integer sourceAirportId, Integer destinationAirportId){
+        return routeRepository.getFirstBySourceAirportIdAndDestinationAirportIdAndActiveOrderByPriceAsc(sourceAirportId,destinationAirportId,(byte)1);
+
     }
 }

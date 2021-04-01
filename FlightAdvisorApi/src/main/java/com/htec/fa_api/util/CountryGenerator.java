@@ -1,12 +1,14 @@
 package com.htec.fa_api.util;
 
 import com.htec.fa_api.model.Country;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+@Component
 public class CountryGenerator {
 
     public static List<Country> create() {

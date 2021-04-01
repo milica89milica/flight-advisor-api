@@ -11,4 +11,6 @@ public interface RouteRepository extends JpaRepository<Route, Integer> {
 
     List<Route> getAllByActive(Byte active);
 
+    Route getFirstBySourceAirportIdAndDestinationAirportIdAndActiveOrderByPriceAsc(Integer sourceAirportId, Integer destinationAirportId, byte active);
+
 }
